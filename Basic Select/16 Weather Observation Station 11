@@ -5,4 +5,4 @@ Please append a semicolon ";" at the end of the query and enter your query in a 
 
 SELECT DISTINCT(CITY)
 FROM STATION
-WHERE REGEXP_LIKE(CITY,'[^aeiou]$','i');
+WHERE REGEXP_LIKE(CITY,'^[^aeiou]|[^aeiou]$','i');
