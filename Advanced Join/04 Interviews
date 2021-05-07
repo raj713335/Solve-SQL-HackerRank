@@ -1,0 +1,26 @@
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+
+
+
+SELECT *
+FROM
+(
+SELECT c.CONTEST_ID, c.HACKER_ID, c.NAME, SUM(NVL(b.TS,0)) STS, SUM(NVL(b.TAS,0)) STAS, SUM(NVL(a.TV,0)) STV, SUM(NVL(a.TUV,0)) STUV
+FROM COLLEGES col, CONTESTS c, CHALLENGES ch, 
+            (SELECT CHALLENGE_ID, SUM(TOTAL_VIEWS) TV, SUM(TOTAL_UNIQUE_VIEWS) TUV
+            FROM VIEW_STATS
+            GROUP BY CHALLENGE_ID) a,
+            (SELECT CHALLENGE_ID, SUM(TOTAL_SUBMISSIONS) TS, SUM(TOTAL_ACCEPTED_SUBMISSIONS) TAS
+            FROM SUBMISSION_STATS
+            GROUP BY CHALLENGE_ID) b
+WHERE c.CONTEST_ID = col.CONTEST_ID(+)
+AND   col.COLLEGE_ID = ch.COLLEGE_ID(+)
+AND   ch.CHALLENGE_ID = a.CHALLENGE_ID(+)
+AND   ch.CHALLENGE_ID = b.CHALLENGE_ID(+)
+GROUP BY c.CONTEST_ID, c.HACKER_ID, c.NAME
+)
+WHERE (STS + STAS + STV + STUV) <> 0
+ORDER BY CONTEST_ID;
