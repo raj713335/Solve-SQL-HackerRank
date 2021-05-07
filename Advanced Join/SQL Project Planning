@@ -1,0 +1,10 @@
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+
+select min(start_date), max(start_date) + 1
+from (select start_date, to_char(start_date,'dd') - row_number() over (order by start_date) as rnk
+from projects)
+group by rnk
+order by max(start_date) - min(start_date), min(start_date);
