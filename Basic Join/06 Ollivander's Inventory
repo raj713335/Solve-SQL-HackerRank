@@ -1,0 +1,11 @@
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+
+select id,age,coins_needed,power   from (
+select id,age,coins_needed,power, min(coins_needed) over (partition by w.code,age,power) as min_coins from wands w 
+inner join wands_property wp on w.code = wp.code
+where wp.is_evil =0
+) where coins_needed = min_coins 
+order by power desc,age desc;
