@@ -1,0 +1,6 @@
+
+select least(x, y), greatest(x, y)
+from functions 
+group by least(x, y), greatest(x, y)
+having count(*) > 1
+order by 1;
