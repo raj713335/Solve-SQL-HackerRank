@@ -1,0 +1,20 @@
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+
+
+SELECT LISTAGG(Numerator, '&') WITHIN GROUP (ORDER BY Numerator)
+  FROM (
+      SELECT A.Numerator
+        FROM (SELECT LEVEL AS Numerator FROM DUAL CONNECT BY LEVEL <= 1000) A
+           , (SELECT LEVEL AS Denominator FROM DUAL WHERE LEVEL > 1 CONNECT BY LEVEL <= 1000) B
+       WHERE A.Numerator >= B.Denominator
+         AND MOD(A.Numerator , B.Denominator) = 0
+       GROUP BY A.Numerator
+      HAVING COUNT(*) <= 1
+  );
