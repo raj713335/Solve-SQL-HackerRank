@@ -13,3 +13,108 @@ FROM submissions s1
 WHERE  DATEDIFF(s1.submission_date, '2016-03-01')+1  = (SELECT COUNT(DISTINCT s2.submission_date) FROM submissions s2 
 WHERE s2.submission_date <= s1.submission_date AND s2.hacker_id = s1.hacker_id)
 GROUP BY s1.submission_date;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT 
+    SubmissionsSummary.submission_date,
+    SUM(SubmissionsSummary.continuously_submit),
+    MAX(SubmissionsSummary.maximum_submissions_hacker_id),
+    MAX(Hackers.name)
+FROM (
+    SELECT 
+        SubmissionsA.*,
+        DECODE(SubmissionsA.learning_day_num - SubmissionsA.days_submitted, 0, 1, 0) continuously_submit,
+        FIRST_VALUE(SubmissionsA.hacker_id)
+            OVER(PARTITION BY SubmissionsA.submission_date 
+                 ORDER BY SubmissionsA.submissions_count DESC, 
+                 SubmissionsA.hacker_id ASC) maximum_submissions_hacker_id
+    FROM (
+        SELECT 
+            SubmissionsB.*, (
+                submission_date - 
+                    ( SELECT MIN(submission_date) FROM Submissions ) + 1
+            ) learning_day_num, (
+                SELECT COUNT(SubmissionsC.submission_date)
+                FROM (
+                    SELECT submission_date, hacker_id 
+                    FROM Submissions 
+                    GROUP BY submission_date, hacker_id
+                ) SubmissionsC
+                WHERE SubmissionsC.submission_date <= SubmissionsB.submission_date AND
+                      SubmissionsC.hacker_id = SubmissionsB.hacker_id
+            ) days_submitted
+        FROM (
+            SELECT 
+                submission_date,
+                hacker_id,
+                COUNT(submission_id) submissions_count
+            FROM Submissions
+            GROUP BY submission_date, hacker_id 
+        ) SubmissionsB
+    ) SubmissionsA 
+) SubmissionsSummary
+JOIN Hackers ON SubmissionsSummary.maximum_submissions_hacker_id = Hackers.hacker_id
+GROUP BY SubmissionsSummary.submission_date
+ORDER BY SubmissionsSummary.submission_date;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
