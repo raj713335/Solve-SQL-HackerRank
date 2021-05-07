@@ -1,0 +1,13 @@
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+
+SELECT n,
+    CASE
+        WHEN p IS NULL THEN 'Root'
+        WHEN n IN (SELECT DISTINCT p FROM bst) THEN 'Inner'
+        ELSE 'Leaf'
+    END
+FROM bst
+ORDER BY n;
