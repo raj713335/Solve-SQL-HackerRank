@@ -1,0 +1,18 @@
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+SELECT hacker_id, name
+FROM(
+SELECT S.hacker_id, h.name, count(*) cnt
+FROM submissions S
+INNER JOIN hackers H
+ON S.hacker_id=H.hacker_id
+INNER JOIN challenges C
+ON S.challenge_id=C.challenge_id
+INNER JOIN difficulty D
+ON C.difficulty_level = D.difficulty_level
+AND S.score=d.score
+GROUP BY S.hacker_id,h.name) a
+WHERE cnt>1
+ORDER BY cnt desc,hacker_id;
